@@ -3,14 +3,16 @@
 <%- include('../partials/head')%>
 
 <body>
-    <div id="wrapper">
+    <div id="wrapper" class="grid-container1" >
      <%- include('../partials/header') %>
      <%- include('../partials/navigation') %>
-
-      <main>
-        <%- body %>
-      </main>
-
+     
+     <main class="grid-container2">
+      <%- body %>
+      <div class="white-content-box"></div>
+      
+    </main>
+    
       <%- include('../partials/footer') %>
     </div>  
 </body>
