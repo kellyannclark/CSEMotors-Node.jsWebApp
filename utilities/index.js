@@ -58,6 +58,37 @@ Util.buildClassificationGrid = async function(data){
 }
 
 
+/* **************************************
+ * Build the detail view HTML for a specific inventory item
+ * ************************************ */
+Util.buildDetailPage = async function (inv_id) {
+  const data = await invModel.getInventoryById(inv_id);
+  if (!data || data.length === 0) {
+    return '<p class="notice">Sorry, the requested vehicle could not be found.</p>';
+  }
+
+  const vehicle = data[0];
+
+  const detailPage = `
+  <div class="details">
+    <img id="detail-image" src="${vehicle.inv_image}" alt="Vehicle Image" />
+    <div class="details-info">
+      <p>Price: $${new Intl.NumberFormat('en-US').format(vehicle.inv_price)}</p>
+      <p>Color: ${vehicle.inv_color}</p>
+      <p>Class: ${vehicle.classification_name}</p>
+      <p>Miles: ${new Intl.NumberFormat('en-US').format(vehicle.inv_miles)}</p>
+      <p>Details: ${vehicle.inv_description}</p>
+    </div>
+  </div>
+`;
+
+return detailPage;
+
+};
+
+
+
+
 /* ****************************************
  * Middleware For Handling Errors
  * Wrap other function in this for 
@@ -65,9 +96,5 @@ Util.buildClassificationGrid = async function(data){
  **************************************** */
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
 
-  
 
-
-
-
-module.exports = Util
+module.exports = Util;

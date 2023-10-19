@@ -19,6 +19,9 @@
     background-size: 380px 380px;
     background-repeat: repeat;
   }
+
+
+
   header {
     background-color: white;
     max-width: 80%;
@@ -54,19 +57,51 @@
 
 
   .grid-container2 {
-    height: 100%;
+    display: none;
   }
+
+
+  .details {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    grid-gap: 20px; 
+    grid-column: 1 / -1; /
+  }
+
+  #detail-image {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+  }
+  .details-info {
+    grid-column: 2 / 3;
+    
+  }
+
 }
 /* body styles */
 
-.grid-container1 {
+/* .grid-container1 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 90px 80px 70px 250px 70px 265px 70px 135px 60px 135px 60px 70px;
   width: 100%; /*covers entire width of parent*/
-  height: 100vh; /*covers the entire viewport height*/
+  /* height: 100vh; /*covers the entire viewport height*/
+/* } */ 
+.details p {
+  background-color:gainsboro; 
+  border: 1px solid black; 
+  font-family:  sans-serif; 
+  font-size: 18px; 
+  color:black; 
+  padding: 10px; 
+  margin-right: 10px;
 }
 
+#detail-image {
+  border: 1px solid black; 
+  margin-left: 10px;
+
+}
 .grid-header {
   grid-column: 1 / span 2;/* whole header spans both columns */
   color:black; /* header text color*/
@@ -416,7 +451,8 @@ footer {
   
 }
 
-
+/***********************************************
+*index view******************************/
 
 
 .namePrice {
