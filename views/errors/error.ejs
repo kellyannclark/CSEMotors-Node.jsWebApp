@@ -1,12 +1,12 @@
-<!-- error.ejs -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title><%= title %></title>
-</head>
-<body>
+<% if (title) { %>
     <h1><%= title %></h1>
     <p><%= message %></p>
-</body>
-</html>
+  <% } else { %>
+    
+    <h1>Error</h1>
+    <p>An error occurred.</p>
+  <% } %>
+  
+
+
 

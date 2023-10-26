@@ -1,19 +1,23 @@
+
+const invModel = require("../models/inventory-model")
+const utilities = require("../utilities/")
+
 const errorController = {};
 
-errorController.generateError = (req, res, next) => {
-  try {
-    // Simulate an error by throwing an exception
-    throw new Error("Intentional 500 Error");
-  } catch (error) {
-    // Build the error page HTML
-    const errorPage = utilities.buildErrPage('500 Internal Server Error', error.message);
 
-    // Render the error page
-    res.status(500).render("errors/error", {
-      title: "500 Internal Server Error",
-      message: error.message,
-    });
+  errorController.generateError = async function (req, res, next) {
+    const classification_id = req.params.classificationId
+    const data = await invModel.getInventoryByClassificationId(classification_id)
+    const grid = await utilities.buildClassificationGrid(data)
+    //let nav = await utilities.getNav()
+    res.render("./inventory/classification", {
+      title: " vehicles",
+      nav,
+      grid,
+    })
   }
-};
 
 module.exports = errorController;
+
+
+

@@ -12,7 +12,7 @@ const app = express()
 const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
-const errorRoute = require("./routes/errorRoute");
+const errorController = require("./controllers/errorController");
 const utilities = require('./utilities/index');
 
 
@@ -28,23 +28,31 @@ app.set("layout", "./layouts/layout") // not at views root
  *************************/
 
 //Error route
-app.use("/error", errorRoute);
+
 app.use(static)
 // Index route
 app.get("/", utilities.handleErrors(baseController.buildHome))
 // Inventory routes
-app.use("/inv", inventoryRoute);
+app.use("/inv", utilities.handleErrors(inventoryRoute));
+
+app.get('/error', utilities.handleErrors(errorController.generateError));
+
+// app.get('/error', (req, res, next) => {
+//   const error = new Error('It works! Welcome to the error 500 page.');
+//   error.status = 500; 
+//   next(error); 
+// });
 
 
-// Error middleware
-app.use((err, req, res, next) => {
-  console.error(`Error at: "${req.originalUrl}": ${err.message}`);
-  res.status(500).render("errors/error", {
-    title: "500 Internal Server Error",
-    message: err.message || "There was a server error.",
-  });
+/* *****************************
+* File Not Found Route - must be last route in list 
+* Place after all routes
+* Unit 3, Basic Error Handling
+**********************************/
+
+app.use(async (req, res, next) => {
+  next({ status: 404, message: "Sorry, we appear to have lost that page."});
 });
-
 
 
 /* ***********************
@@ -52,7 +60,16 @@ app.use((err, req, res, next) => {
 * Place after all other middleware
 *************************/
 
-
+app.use(async (err, req, res, next) => {
+  let nav = await utilities.getNav()
+  console.error(`Error at: "${req.originalUrl}": ${err.message}`)
+  if(err.status == 404){ message = "Sorry, we appear to have lost that page."} else {message = 'Oh no! There was a crash. Maybe try a different route?'}
+  res.render("errors/error", {
+    title: err.status || 'Server Error',
+    message,
+    nav
+  })
+})
 
 
 /* ***********************
