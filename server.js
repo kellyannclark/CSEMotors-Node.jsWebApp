@@ -12,8 +12,8 @@ const app = express()
 const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
-const errorController = require("./controllers/errorController");
 const utilities = require('./utilities/index');
+const errorRoute = require("./routes/errorRoute")
 
 
 /* ***********************
@@ -33,9 +33,9 @@ app.use(static)
 // Index route
 app.get("/", utilities.handleErrors(baseController.buildHome))
 // Inventory routes
-app.use("/inv", utilities.handleErrors(inventoryRoute));
+app.use("/inv", inventoryRoute);
 
-app.get('/error', utilities.handleErrors(errorController.generateError));
+app.use('/error', errorRoute);
 
 // app.get('/error', (req, res, next) => {
 //   const error = new Error('It works! Welcome to the error 500 page.');
