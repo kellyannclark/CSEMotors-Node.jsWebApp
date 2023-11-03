@@ -14,6 +14,31 @@ const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
 const utilities = require('./utilities/index');
 const errorRoute = require("./routes/errorRoute")
+const session = require("express-session")  //video demo #1
+const pool = require('./database/')         //video demo  #1
+
+
+
+/* ***********************                  //video demo #2 
+ * Middleware                               //add this middleware above the view engine and template section
+ * ************************/                //we are going to use PostgreSQL database to place our session info in
+app.use(session({                           //this middleware makes it easy for the session to interact w/ the database
+  store: new (require('connect-pg-simple')(session))({     //now we'll head to .env at root of project to create the secret value
+    createTableIfMissing: true,                             //from line 30
+    pool,
+  }),
+  secret: process.env.SESSION_SECRET,   
+  resave: true,
+  saveUninitialized: true,
+  name: 'sessionId',
+}))
+
+// Express Messages Middleware           //video demo #3
+app.use(require('connect-flash')())     //add middleware once session is operational
+app.use(function(req, res, next){         //this middleware allows the messages to be set then passes it on to the next process
+  res.locals.messages = require('express-messages')(req, res)    //now let's head to the index.ejs to set up the EJS code block in the view
+  next()
+})
 
 
 /* ***********************
