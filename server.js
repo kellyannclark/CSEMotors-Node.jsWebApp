@@ -16,6 +16,8 @@ const utilities = require('./utilities/index');
 const errorRoute = require("./routes/errorRoute")
 const session = require("express-session")  //video demo #1
 const pool = require('./database/')         //video demo  #1
+const accountRoute = require("./routes/accountRoute")
+const bodyParser = require("body-parser")
 
 
 
@@ -40,6 +42,10 @@ app.use(function(req, res, next){         //this middleware allows the messages 
   next()
 })
 
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+
 
 /* ***********************
  * View Engine and Template
@@ -62,11 +68,7 @@ app.use("/inv", inventoryRoute);
 
 app.use('/error', errorRoute);
 
-// app.get('/error', (req, res, next) => {
-//   const error = new Error('It works! Welcome to the error 500 page.');
-//   error.status = 500; 
-//   next(error); 
-// });
+app.use("/account", accountRoute)
 
 
 /* *****************************
