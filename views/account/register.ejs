@@ -1,0 +1,60 @@
+
+
+<%- messages() %>
+
+<% if (title) { %>
+    <h1><%= title %></h1>
+<% } else {
+    res.redirect('/');
+} %>
+<% if (errors) { %>
+    <ul class="notice">
+   <% errors.array().forEach(error => { %>
+     <li><%= error.msg %></li>
+  <%  }) %>
+   </ul>
+  <% } %>
+<p>All fields are required.</p>
+<form action="/account/register" method="post">
+    <label for="firstName">First Name:</label>
+    <input type="text" name="account_firstname" id="accountFirstname" required value="<%= locals.account_firstname %>">
+
+
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="accountLastname" name="account_lastname" required value="<%= locals.account_lastname %>">
+
+    <label for="email">Email Address:</label>
+    <input type="email" id="accountEmail" name="account_email" required placeholder="Enter a valid email address"required value="<%= locals.account_email %>">
+
+    <label for="password">Password:</label>
+    <div class="password-container">
+        <input type="password" id="password" name="account_password" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"required>
+        <button type="button" id="togglePassword">Show Password</button>
+    </div>
+    <p class="password-requirements">
+        Password must be at least 12 characters long and contain:
+        <br>
+        - At least 1 capital letter
+        <br>
+        - At least 1 number
+        <br>
+        - At least 1 special character
+    </p>
+
+    <button type="submit">Register</button>
+</form>
+
+<script>
+    const togglePasswordButton = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    togglePasswordButton.addEventListener("click", function () {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            togglePasswordButton.textContent = "Hide Password";
+        } else {
+            passwordInput.type = "password";
+            togglePasswordButton.textContent = "Show Password";
+        }
+    });
+</script>

@@ -1,0 +1,75 @@
+<% if (title) { %>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+
+      body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: #f8f8f8;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
+
+      h1 {
+        color: cadetblue;
+        margin-left: 30px;
+      }
+
+      .button-container {
+        margin-top: 20px;
+      }
+
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin-bottom: 15px;
+        margin: 10 15px; /* Increased margin for more space */
+        text-decoration: none;
+        color: #fff;
+        background-color:cadetblue;
+        border: 1px solid black;
+        border-radius: 5px;
+        font-size: 18px;
+        cursor: pointer;
+      }
+
+      .button:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+      }
+
+      p {
+        font-size: 16px;
+        color: #555;
+      }
+
+    </style>
+  </head>
+  <body>
+
+ 
+    <h1><%= title %></h1>
+    
+    <div class="button-container">
+      <a href="/inv/add-classification" class="button">Add New Classification</a>
+      <a href="/inv/add-inventory" class="button">Add New Inventory</a>
+    </div>
+
+  </body>
+  </html>
+<% } else { %>
+  <!-- Error page content -->
+  <h1>Error</h1>
+  <p>An error occurred.</p>
+  <%= message %>
+<% } %>
+
+
+  
+  

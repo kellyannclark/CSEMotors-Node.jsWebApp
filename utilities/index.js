@@ -86,7 +86,34 @@ Util.buildDetailPage = async function (inv_id) {
 return detailPage;
 
 };
+/* **************************************
+ * Populate Classification Drop Down
+ * ************************************ */
+Util.populateDropDown = async function (classification_id = null) {
+  try {
+    const data = await invModel.getClassifications();
+    let isSelected = "selected";
+    
+    // If a classification_id is provided, set the selected option
+    classification_id != null ? (isSelected = "") : (isSelected = "selected");
+    
+    let dropdownHTML = '<select name="classification_name" class="class-option">';
+    dropdownHTML += `<option value="" disabled ${isSelected}>Choose a Classification</option>`;
+    
+    data.rows.forEach((row) => {
+      const value = row.classification_id;
+      const text = row.classification_name;
+      dropdownHTML += `<option value="${value}">${text}</option>`;
+    });
 
+    dropdownHTML += '</select>';
+
+    return dropdownHTML;
+  } catch (error) {
+    console.error('populateDropDown error:', error);
+    return '<p class="notice">An error occurred while loading the dropdown options.</p>';
+  }
+}
 
 
 
