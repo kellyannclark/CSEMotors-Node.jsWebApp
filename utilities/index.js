@@ -25,6 +25,33 @@ Util.getNav = async function (req, res, next) {
   list += "</ul>"
   return list
 }
+
+
+/* **************************************
+ * Constructs the dropdown HTML
+ * ************************************ */
+Util.getDropDown = async function (classification_id = null) {
+  
+    let data = await invModel.getClassifications();// Fetch classifications from the database
+    let list = `<select name="classification_id" id="classification_id" required>`;// Initialize the dropdown HTML with a required attribute
+    list += `<option value=''>Choose a Classification</option>`;// Add an initial default option: "Choose a Classification"
+   
+    data.rows.forEach((row) => { // Iterate over the classifications
+      list += `<option value=${row.classification_id}`; // Add an option for each classification
+      
+      if (classification_id != null && row.classification_id == classification_id) {// Check if the classification_id matches the provided classification_id
+        list += " selected "// If matched, mark the option as "selected"
+        isSelected = ""
+      }
+      list += `>${row.classification_name}</option>`;// Close the option tag and include the classification_name
+    }); 
+    list += '</select>';// Close the select tag
+    return list;// Return the complete HTML for the dropdown
+  } 
+
+
+
+
 /* **************************************
 * Build the classification view HTML
 * ************************************ */
@@ -87,33 +114,63 @@ return detailPage;
 
 };
 /* **************************************
- * Populate Classification Drop Down
+ * Build the Add Inventory view HTML
  * ************************************ */
-Util.populateDropDown = async function (classification_id = null) {
-  try {
-    const data = await invModel.getClassifications();
-    let isSelected = "selected";
+Util.buildAddInventory = async function() {
+  let list = await Util.getDropDown()
+  let grid = "";
+      grid += '<label>All Fields Are Required</label>'
+      grid += '<form class="new-vehicle" action="add-inventory" method="post">'
+      grid += '<br>'
+      grid += '<fieldset class="vehicle-fieldset">'
+      grid += '<label>Classification</label>'
+      grid += '<br>'
+      + list;
+      grid += '<br>'
+      grid += '<label>Make</label>'
+      grid += '<br>'
+      grid += '<input class="input" type="text" name="inv_make" minlength="3" required placeholder="min of 3 characters">'
+      grid += '<br>'
+      grid += '<label>Model</label>'
+      grid += '<br>'
+      grid += '<input class="input" type="text" name="inv_model" minlength="3" required placeholder="min of 3 characters">'
+      grid += '<br>'
+      grid += '<label>Description</label>'
+      grid += '<br>'
+      grid += '<textarea name="inv_description" rows="5" cols="40" required></textarea>'
+      grid += '<br>'
+      grid += '<label>Image</label>'
+      grid += '<br>'
+      grid += '<input name="inv_image" required value="/images/vehicles/no-image.png">'
+      grid += '<br>'
+      grid += '<label>Thumbnail</label>'
+      grid += '<br>'
+      grid += '<input name="inv_thumbnail" required value="/images/vehicles/no-image-tn.png">'
+      grid += '<br>'
+      grid += '<label>Price</label>'
+      grid += '<br>'
+      grid += '<input class="input" type="number" name="inv_price" required placeholder="decimal or integar">'
+      grid += '<br>'
+      grid += '<label>Year</label>'
+      grid += '<br>'
+      grid += '<input class="input" type="number" name="inv_year" required placeholder="4-digit year">'
+      grid += '<br>'
+      grid += '<label>Miles</label>'
+      grid += '<br>'
+      grid += '<input class="input" type="number" name="inv_miles" required placeholder="digits only">'
+      grid += '<br>'
+      grid += '<label>Color</label>'
+      grid += '<br>'
+      grid += '<input type="text" name="inv_color" required>'
+      grid += '<br>'
+      grid += '</fieldset>'
+      grid += '<input id="addInventory-button" type="submit" value="Add Inventory">'
+      grid += '</form';
     
-    // If a classification_id is provided, set the selected option
-    classification_id != null ? (isSelected = "") : (isSelected = "selected");
-    
-    let dropdownHTML = '<select name="classification_name" class="class-option">';
-    dropdownHTML += `<option value="" disabled ${isSelected}>Choose a Classification</option>`;
-    
-    data.rows.forEach((row) => {
-      const value = row.classification_id;
-      const text = row.classification_name;
-      dropdownHTML += `<option value="${value}">${text}</option>`;
-    });
 
-    dropdownHTML += '</select>';
-
-    return dropdownHTML;
-  } catch (error) {
-    console.error('populateDropDown error:', error);
-    return '<p class="notice">An error occurred while loading the dropdown options.</p>';
-  }
-}
+      return grid
+      
+}     
 
 
 

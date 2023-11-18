@@ -1,15 +1,28 @@
+<%- messages() %>
+
 <% if (title) { %>
     <h1><%= title %></h1>
-    <form id="addClassificationForm" action="/inv/add-classification" method="post">
-      <label for="addClassification">Classification:</label>
-      <input type="text" id="addClassification" name="classification_name" required pattern="[A-Za-z]+" placeholder="Alphabetical characters only"> 
-      <button type="submit">Add Classification</button>
-    </form>
-  <% } else { %>
-    <h1>Error</h1>
-    <p>An error occurred.</p>
-    <%= message %>
+<% } else {
+    res.redirect('/');
+} %>
+<% if (errors) { %>
+    <ul class="notice">
+   <% errors.array().forEach(error => { %>
+     <li><%= error.msg %></li>
+  <%  }) %>
+   </ul>
   <% } %>
+  <form id="addClassificationForm" action="/inv/add-classification" method="post">
+    <label for="addClassification">Classification:</label>
+    <input type="text" id="addClassification" name="classification_name" required pattern="[A-Za-z]+" title="No spaces or special characters" placeholder="No spaces or special characters">
+
+    <button type="submit">Add Classification</button>
+  </form>
+
+
   
+
+
   
+    
   

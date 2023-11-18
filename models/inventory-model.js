@@ -56,17 +56,28 @@ async function insertNewClassification(classification_name) {
 
   }
 }
+
 /* ***************************
- * Add new inventory to the database
+ * insert new inventory into the database
  * ************************** */
-async function insertInventory(classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_color, inv_miles) {
+
+
+async function insertInventory(classification_id, inv_make, inv_model, inv_year, inv_description,
+  inv_image, inv_thumbnail, inv_price, inv_color, inv_miles) {
+  console.log(`classification_id, inv_make, inv_model, inv_year, inv_description,
+  inv_image, inv_thumbnail, inv_price, inv_color, inv_miles`);
+
   try {
-    const sql = "classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_color, inv_miles) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10 ) RETURNING *"
-    return await pool.query(sql, [classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_color, inv_miles ])
+    const sql = "INSERT INTO public.inventory (classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_color, inv_miles) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *";
+    return await pool.query(sql, [classification_id, inv_make, inv_model, inv_year, inv_description,
+      inv_image, inv_thumbnail, inv_price, inv_color, inv_miles]);
   } catch (error) {
-    return error.message
+    return error.message;
   }
 }
+
+
+
 
 
 

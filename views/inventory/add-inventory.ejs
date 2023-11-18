@@ -1,101 +1,31 @@
 <% if (title) { %>
   <h1><%= title %></h1>
-  <% if (message) { %>
-    <p><%= message %></p>
-  <% } %>
-
-  <form id="addInventoryForm" action="/inv/add-inventory" method="post" class="form-container">
-    
- 
-    <select id="classification_name" name="classification_name" required class="input-field">
-      <option value="8" disabled selected>Choose a Classification</option>
-      <option value="1">Custom</option>
-      <option value="14">Newcar</option>
-      <option value="5">Sedan</option>
-      <option value="2">Sport</option>
-      <option value="3">SUV</option>
-      <option value="4">Truck</option>
-
- 
-    </select>
-    
-
-    <label for="inv_make">Make:</label>
-    <input type="text" id="inv_make" name="inv_make" required pattern=".{3,}" placeholder="Minimum 3 characters" class="input-field" required value="<%= locals.inv_make %>">
+  <%- grid %>
+<% } else { %>
+  <% res.redirect('/'); %>
+<% } %>
+<% if (errors && errors.length > 0) { %>
+  <ul class="notice">
+    <% errors.forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
 
 
-    <label for="inv_model">Model:</label>
-    <input type="text" id="inv_model" name="inv_model" required pattern=".{3,}" placeholder="Minimum 3 characters" class="input-field" required value="<%= locals.inv_model %>">
 
-    <label for="inv_year">Year:</label>
-    <input type="text" id="inv_year" name="inv_year" required pattern="\d{4}" placeholder="4 digits" class="input-field" required value="<%= locals.inv_year %>">
-    
-    <label for="inv_description">Description:</label>
-    <textarea id="inv_description" name="inv_description" required value="<%= locals.inv_description %>"required class="textarea-field"></textarea>
-    
-    <label for="inv_image">Image Path:</label>
-    <input type="text" id="inv_image" name="inv_image" required placeholder="Enter image path" class="input-field" required value="<%= locals.inv_image %>">
-    
-    <label for="inv_thumbnail">Thumbnail Path:</label>
-    <input type="text" id="inv_thumbnail" name="inv_thumbnail" required placeholder="Enter thumbnail path" class="input-field" required value="<%= locals.inv_thumbnail %>">
-    
-    <label for="inv_price">Price:</label>
-    <input type="number" id="inv_price" name="inv_price" required pattern="^\d+(\.\d+)?$" placeholder="Decimal or Integer" class="input-field" required value="<%= locals.inv_price %>">
-    
-    <label for="inv_color">Color:</label>
-    <input type="text" id="inv_color" name="inv_color" required placeholder="Enter color" class="input-field" required value="<%= locals.inv_color %>">
-    
-    <label for="inv_miles">Miles:</label>
-    <input type="number" id="inv_miles" name="inv_miles" required pattern="\d+" placeholder="Digits Only" class="input-field" required value="<%= locals.inv_miles %>">
+
+
+
+
+
+
+
+
   
-    <button type="submit" class="submit-button">Add Inventory</button>
-  </form>
-  <% } else { %>
-    <h1>Error</h1>
-    <p>An error occurred.</p>
-  <% } %>
+  
+ 
+  
 
 
 
-<style>
-  .form-container {
-    width: 200px; /* Reduced from 400px */
-    margin: 0 auto;
-    padding: 10px; /* Reduced from 20px */
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-
-  .input-field {
-    width: 100%;
-    padding: 5px; /* Reduced from 10px */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px; /* Reduced from 16px */
-    margin-bottom: 5px; /* Reduced from 10px */
-  }
-
-  .textarea-field {
-    width: 100%;
-    padding: 5px; /* Reduced from 10px */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px; /* Reduced from 16px */
-    margin-bottom: 5px; /* Reduced from 10px */
-  }
-
-  .submit-button {
-    background-color: #007bff;
-    color: white;
-    padding: 5px 10px; /* Reduced from 10px 20px */
-    border: none;
-    border-radius: 5px;
-    font-size: 14px; /* Reduced from 16px */
-    cursor: pointer;
-  }
-
-  .submit-button:hover {
-    background-color: #0056b3;
-  }
-</style>

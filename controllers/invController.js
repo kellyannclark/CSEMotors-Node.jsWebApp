@@ -4,7 +4,7 @@ const utilities = require("../utilities/")
 const invCont = {}
 
 /* ***************************
- *  Build inventory by classification view
+ *  Deliver inventory by classification view
  * ************************** */
 invCont.buildByClassificationId = async function (req, res, next) {
   const classification_id = req.params.classificationId
@@ -20,7 +20,7 @@ invCont.buildByClassificationId = async function (req, res, next) {
 }
 
 /* ***************************
- *  Build by detail view
+ *  Deliver detail view
  * ************************** */
 invCont.showInventoryDetail = async function (req, res) {
   try {
@@ -58,7 +58,7 @@ invCont.showInventoryDetail = async function (req, res) {
 };
 
 /* ***************************
- *  Build by management view
+ *  Deliver management view
  * ************************** */
 invCont.buildManagementView = async function (req, res, next) {
   try {
@@ -81,16 +81,16 @@ invCont.buildManagementView = async function (req, res, next) {
 
 
 /* ***************************
- *  Build ADD classification view
+ *  Deliver ADD classification view
  * ************************** */
+
 invCont.addClassificationView = async function (req, res, next) {
   try {
-    const messages = req.flash();
     let nav = await utilities.getNav();
     res.render("inventory/add-classification", { //this is the path to the view
       title: "Add Classification",
       nav,
-      messages,
+      errors: null,
     });
   } catch (error) {
     console.error("Add Classification error: " + error);
@@ -104,7 +104,7 @@ invCont.addClassificationView = async function (req, res, next) {
 
 
 /* ***************************
- *  ADD new Classification to DB
+ *  Process add new Classification 
  * ************************** */
 
 invCont.addNewClassification = async (req, res) => {
@@ -116,11 +116,13 @@ invCont.addNewClassification = async (req, res) => {
 
     // Fetch the updated nav data
     const newNav = await utilities.getNav();
-    
-    res.render('./inventory/management', {
-      title: 'Inventory Management',
+        // Set flash message
+      req.flash("notice", "You've added a new classification");
+
+      res.render('./inventory/add-classification', {
+      title: 'Add Classification',
       nav: newNav, // Pass the updated nav data
-      messages: { success: 'Classification added successfully.' },
+      errors: null,
     });
   } catch (error) {
     console.error('addNewClassification error:', error);
@@ -131,23 +133,22 @@ invCont.addNewClassification = async (req, res) => {
 
 
 /* ***************************
- * Build ADD inventory view
+ * Deliver add inventory view
  * ************************** */
 invCont.addInventoryView = async function (req, res, next) {
   try {
-    const messages = req.flash();
     let nav = await utilities.getNav();
-   
-    const classification_name = await invModel.getClassifications(); 
-    const classificationOptions = await utilities.populateDropDown();
+    let grid = await utilities.buildAddInventory();
+    const classificationOptions = await utilities.getDropDown();
 
-    console.log(classification_name);
+    console.log(classificationOptions);
     res.render("./inventory/add-inventory", {
       title: "Add Inventory",
       nav,
-      messages,
-      classification_name,
-      classificationOptions, 
+      grid,
+      classificationOptions,
+      errors: null,
+      layout: './layouts/layout'
     });
   } catch (error) {
     console.error("Add Inventory View error: " + error);
@@ -159,10 +160,15 @@ invCont.addInventoryView = async function (req, res, next) {
   }
 };
 
-invCont.addInventory = async (req, res) => {
+
+/* ***************************
+ * Process add inventory
+ * ************************** */
+
+invCont.addInventory = async (req, res, next) => {
   try {
     const {
-      classification_name,
+      classification_id,
       inv_make,
       inv_model,
       inv_year,
@@ -174,33 +180,43 @@ invCont.addInventory = async (req, res) => {
       inv_miles,
     } = req.body;
 
-    // Determine the classification_id based on the selected classification_name
-    const classification_id = await invModel.getInventoryByClassificationId(classification_name);
+    const price = parseInt(inv_price)
+    const miles = parseInt(inv_miles)
 
-    // Insert inventory into the database
-    await invModel.insertInventory({
+
+    let result = await invModel.insertInventory(
       classification_id,
-      classification_name,
       inv_make,
       inv_model,
       inv_year,
       inv_description,
       inv_image,
       inv_thumbnail,
-      inv_price,
+      price,
       inv_color,
-      inv_miles,
-    });
+      miles,
+    )
 
-    res.render('inventory/add-inventory', {
-      title: 'Add Inventory',
-      message: 'Inventory added successfully.',
-      nav: await utilities.getNav(),
-    });
+    let nav = await utilities.getNav()
+    
+    if(result) {
+      req.flash("notice", `You have successfully added inventory, ${inv_make} ${inv_model}`)
+      res.status(201).render("./inventory/management", {
+        title:"Add Inventory",
+        nav,
+        errors: null,
+      })
+    }
   } catch (error) {
+    let grid = await utilities.buildAddInventory()
     console.error('Add Inventory error:', error);
     req.flash('error', 'Failed to add inventory. Please try again.');
-    res.redirect('/inv/add-inventory'); // Redirect back to the add-inventory page with an error message
+    res.status(500).render("./inventory/add-inventory", {
+      title:"Add Inventory",
+      nav,
+      grid,
+      errors: null,
+    })
   }
 };
 

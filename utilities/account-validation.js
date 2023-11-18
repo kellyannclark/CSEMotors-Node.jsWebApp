@@ -105,6 +105,7 @@ validate.checkRegData = async (req, res, next) => {
         title: "Login",
         nav,
         account_email,
+        account_password
       });
       return;
     }
