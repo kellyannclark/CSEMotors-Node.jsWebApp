@@ -200,9 +200,9 @@ invCont.addInventory = async (req, res, next) => {
     let nav = await utilities.getNav()
     
     if(result) {
-      req.flash("notice", `You have successfully added inventory, ${inv_make} ${inv_model}`)
+      req.flash("notice", `You have successfully added inventory ${inv_make} ${inv_model}`)
       res.status(201).render("./inventory/management", {
-        title:"Add Inventory",
+        title:"Inventory Management",
         nav,
         errors: null,
       })
