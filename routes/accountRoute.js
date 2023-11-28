@@ -3,7 +3,7 @@ const router = new express.Router()
 const accountController = require('../controllers/accountController')
 const utilities = require('../utilities/index')
 const regValidate = require('../utilities/account-validation')
-const loginValidate = require('../utilities/account-validation')
+
 
 //Deliver Login View
 router.get("/login", utilities.handleErrors(accountController.buildLogin));
@@ -20,14 +20,19 @@ router.post(
     utilities.handleErrors(accountController.registerAccount)
 )
 
-// Process the login attempt
+// Process the login request
 router.post(
   "/login",
-  [
-    loginValidate.loginRules(), // Use the login validation rules
-    loginValidate.checkLoginData, // Use the checkLoginData function
-  ],
-  utilities.handleErrors(accountController.login) // Handle login logic in accountController.login
-);
+  regValidate.loginRules(),
+  regValidate.checkLoginData,
+  utilities.handleErrors(accountController.accounBtLogin)
+)
+
+
+// New Default Route for Accounts
+router.get("/", 
+//utilities.checkLogin,
+utilities.handleErrors(accountController.accountManagement));
+
 
 module.exports = router;

@@ -18,6 +18,7 @@ const session = require("express-session")  //video demo #1
 const pool = require('./database/')         //video demo  #1
 const accountRoute = require("./routes/accountRoute")
 const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
 
 
 
@@ -44,7 +45,8 @@ app.use(function(req, res, next){         //this middleware allows the messages 
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-
+//Unit 5 Login Activity
+app.use(cookieParser())
 
 
 /* ***********************

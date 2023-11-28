@@ -96,7 +96,7 @@ validate.checkRegData = async (req, res, next) => {
  * ***************************** */
   
   validate.checkLoginData = async (req, res, next) => {
-    const { account_email, account_password } = req.body;
+    const { account_email } = req.body;
     let errors = validationResult(req);
     if (!errors.isEmpty()) {
       let nav = await utilities.getNav();
@@ -105,7 +105,6 @@ validate.checkRegData = async (req, res, next) => {
         title: "Login",
         nav,
         account_email,
-        account_password
       });
       return;
     }
