@@ -1,0 +1,65 @@
+<% if (title) { %>
+    <h1><%= title %></h1>
+<% } else {
+    res.redirect('/');
+} %>
+
+<!-- Errors for Account Update Form -->
+<% if (errors && errors.accountUpdate) { %>
+    <ul class="notice">
+        <% errors.accountUpdate.forEach(error => { %>
+            <li><%= error.msg %></li>
+        <% }) %>
+    </ul>
+<% } %>
+
+<!-- Errors for Change Password Form -->
+<% if (errors && errors.changePassword) { %>
+    <ul class="notice">
+        <% errors.changePassword.forEach(error => { %>
+            <li><%= error.msg %></li>
+        <% }) %>
+    </ul>
+<% } %>
+
+<!-- Success Message -->
+<% if (message) { %>
+    <div class="message">
+        <%= message %>
+    </div>
+<% } %>
+
+<!-- Account Update Form -->
+<form action="/account/accountUpdate" method="post">
+    <label for="firstName">First Name:</label>
+    <input type="text" name="account_firstname" id="account_firstname" required value="<%= account_firstname %>">
+    
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="accountLastname" name="account_lastname" required value="<%= account_lastname %>">
+    
+    <label for="email">Email Address:</label>
+    <input type="email" id="accountEmail" name="account_email" placeholder="Enter a valid email address" required value="<%= account_email %>">
+
+    <input type="hidden" name="account_id" value="<%= account_id %>">
+
+    <button type="submit">Update Account</button>
+</form>
+
+<!-- Change Password Form -->
+<form action="/account/passwordUpdate" method="post">
+    <label for="newPassword">New Password:</label>
+    <input type="password" id="newPassword" name="account_password" required>
+    <p class="password-requirements">
+        Password must be at least 12 characters long and contain:
+        <br>
+        - At least 1 capital letter
+        <br>
+        - At least 1 number
+        <br>
+        - At least 1 special character
+    </p>
+
+    <input type="hidden" name="account_id" value="<%= account_id %>">
+
+    <button type="submit">Change Password</button>
+</form>

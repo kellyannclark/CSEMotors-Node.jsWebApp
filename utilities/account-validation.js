@@ -111,6 +111,48 @@ validate.checkRegData = async (req, res, next) => {
     next();
   };
   
+  /* ******************************
+ * Check data and return errors or continue to update account
+ * ***************************** */
+validate.checkAccountData = async (req, res, next) => {
+  const { account_firstname, account_lastname, account_email } = req.body;
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    let nav = await utilities.getNav();
+    res.render('account/accountUpdate', {  // Use the update view for errors
+      errors,
+      title: 'Account Update',
+      nav,
+      account_firstname,
+      account_lastname,
+      account_email,
+    });
+    return;
+  }
+  next();
+};
+
+/* ******************************
+ * Password Validation Rules
+ * ***************************** */
+validate.passwordRules = () => {
+  return [
+    // Password is required and must be a strong password
+    body("new_password")
+      .trim()
+      .isStrongPassword({
+        minLength: 12,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 1,
+      })
+      .withMessage("New password does not meet requirements."),
+  ];
+};
+
+
+
 
   
   module.exports = validate

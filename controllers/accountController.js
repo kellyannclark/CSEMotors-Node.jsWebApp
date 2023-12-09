@@ -31,6 +31,30 @@ async function buildLogin(req, res, next) {  //Line 4 - begins the function, dec
     })
   }
   
+/* ****************************************
+*  Deliver update view
+* *************************************** */
+async function buildUpdate(req, res, next) {
+  const account_id = parseInt(req.params.account_id)
+  let nav = await utilities.getNav();
+  const accountData = await accountModel.getAccountById(account_id);
+  
+  // Check if there is a flash message
+  const flashMessage = req.flash("notice")[0] || "";
+
+  res.render("account/accountUpdate", {
+    title: "Account Update",
+    nav,
+    message: flashMessage, // Include flash message in messages
+    errors: null,
+    account_id: accountData.account_id,
+    account_firstname: accountData.account_firstname,
+    account_lastname: accountData.account_lastname,
+    account_email: accountData.account_email,
+  });
+}
+
+
 
 /* ****************************************
 *  Process Registration
@@ -155,14 +179,115 @@ async function accountLogin(req, res) {
 
 async function accountManagement(req, res) {
   let nav = await utilities.getNav()
-  console.log("checking delivery of management view")
+  req.flash(
+    "notice",
+    `You're logged in.`
+);
   res.render("account/accountManagement", {
     title: "Account Management",
     nav, 
     errors: null,
+ 
   })
 }
 
-module.exports = { buildLogin, registerAccount, buildRegister, login, accountLogin, accountManagement };
+/* ****************************************
+*  Handle the Account Update Process
+* *************************************** */
+
+async function accountUpdate(req, res, next) {
+  let nav = await utilities.getNav();
+  const { account_firstname, account_lastname, account_email, account_id } = req.body; // Extract names and email from req. body
+  console.log("info", account_firstname, account_lastname, account_email, account_id)
+  let accountData;  // Declare accountData here
+  
+  try {
+    const updatedAccount = await accountModel.updateAccountData(account_id, {
+      account_firstname,
+      account_lastname,
+      account_email,
+    });
+
+    if (updatedAccount) {
+      req.flash("notice", "Account updated successfully.");
+    } else {
+      req.flash("notice", "Failed to update account.");
+    }
+
+    accountData = await accountModel.getAccountById(account_id);
+    res.locals.accountData.account_firstname = accountData.account_firstname;
+    res.locals.accountData.account_lastname = accountData.account_lastname;
+    res.locals.accountData.account_email = accountData.account_email;
+    res.render("account/accountManagement", {
+      title: "Account Management",
+      nav,
+      errors: null,
+      message: req.flash('notice'),
+    });
+  } catch (error) {
+    console.error(error);
+
+    req.flash("notice", "An error occurred during the account update process.");
+    res.render("account/accountUpdate", {
+      title: "Account Update",
+      nav,
+      errors: null,
+      account_firstname,
+      account_lastname,
+      account_email,
+      accountData: accountData || {},
+      message: req.flash('notice'),
+    });
+  }
+}
+
+
+
+
+
+/* ****************************************
+*  Handle the Password Change Process
+* *************************************** */
+
+async function changePassword(req, res, next) {
+  let nav = await utilities.getNav();
+  const { account_password, account_id } = req.body; // Extract new password from req. body
+  console.log("new password", account_password, account_id)
+  try {
+
+    // Update the password in the database
+    const passwordUpdateResult = await accountModel.updatePassword(account_password, account_id);
+
+    if (passwordUpdateResult) {
+      // Success message
+      req.flash("notice", "Password changed successfully.");
+    } else {
+      // Failure message
+      req.flash("notice", "Failed to change password.");
+    }
+
+    // Query the account data from the database after the password update is done
+    const accountData = await accountModel.getAccountById(req.account_id);
+
+    // Deliver the management view where the updated account information will be displayed
+    res.render("account/accountManagement", {
+      title: "Account Management",
+      nav,
+      errors: null,
+      accountData,
+    });
+  } catch (error) {
+    console.error(error);
+    // Handle other errors (e.g., database error)
+    req.flash("notice", "An error occurred during the password change process.");
+    res.redirect("/"); 
+  }
+}
+
+
+
+
+
+module.exports = { buildLogin, registerAccount, buildRegister, login, accountLogin, accountManagement, buildUpdate, accountUpdate, changePassword};
 
   

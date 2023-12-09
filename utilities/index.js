@@ -97,7 +97,8 @@ Util.buildDetailPage = async function (inv_id) {
     return '<p class="notice">Sorry, the requested vehicle could not be found.</p>';
   }
 
-  const vehicle = data[0];
+  const vehicle = data;
+  console.log("This is data", data)
 
   const detailPage = `
   <div class="details">
@@ -220,6 +221,41 @@ Util.checkJWTToken = (req, res, next) => {
     return res.redirect("/account/login")
   }
  }
+
+  /* ****************************************
+ *  Middleware for checking JWT token and account type
+ * ************************************ */
+
+Util.checkTokenAndAccountType = async (req, res, next) => {
+  if (req.cookies.jwt) {    // Check if JWT token exists in cookies
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      async (err, accountData) => {
+        if (err) {   // Invalid or expired token, redirect to login with error message
+          req.flash("error", "Invalid token.");
+          return res.redirect("/account/login");
+        }
+
+        if (accountData.account_type === "Employee" || accountData.account_type === "Admin") {      // Check account type (assuming the account type is in accountData)
+          res.locals.accountData = accountData;   // Allow access to inventory administrative views
+          res.locals.loggedin = 1;
+          next();
+        } else {
+          // Deny access for other account types
+          req.flash("error", "Insufficient privileges");
+          res.clearCookie("jwt");
+          return res.redirect("/account/login");
+        }
+      }
+    );
+  } else {
+    // No JWT token, redirect to login
+    req.flash("error", "Please log in");
+    res.clearCookie("jwt");
+    return res.redirect("/account/login");
+  }
+};
 
 
 

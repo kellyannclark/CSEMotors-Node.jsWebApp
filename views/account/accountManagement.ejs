@@ -1,10 +1,5 @@
-<%- messages() %>
-
 <% if (title) { %>
     <h1><%= title %></h1>
-    <% if (!errors) { %>
-        <p>You're logged in</p>
-    <% } %>
 <% } else {
     res.redirect('/');
 } %>
@@ -16,5 +11,19 @@
         <% }) %>
     </ul>
 <% } %>
+
+<% if (locals.accountData.account_type === "Client") { %>
+    <h2>Welcome <%= locals.accountData.account_firstname %></h2>
+
+<% } else if (locals.accountData.account_type === "Employee" || locals.accountData.account_type === "Admin") { %>
+    <h2>Welcome <%= locals.accountData.account_firstname %> </h2>
+    <div class="left-links">
+        <p><a style="font-size: 18px;" href="/account/accountUpdate/<%= locals.accountData.account_id %>">Update Account Information</a></p>
+        <h3>Inventory Management</h3>
+        <p><a style="font-size: 18px;" href="/inv/">Manage Inventory</a></p>
+    </div>
+<% } %>
+
+<%- messages() %>
 
 

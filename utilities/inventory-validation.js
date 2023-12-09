@@ -77,7 +77,7 @@ validate.addInventoryRules= () => {
 };
 
   /* ******************************
- * Check data and return errors or continue to add inventory
+ * Check data and return errors or continue to add inventory view
  * ***************************** */
 
 
@@ -120,6 +120,55 @@ validate.checkAddInventoryData = async (req, res, next) => {
   }
 };
 
+  /* ******************************
+ * Check data and return errors or continue to edit inventory view
+ * ***************************** */
+
+
+  validate.checkUpdateData = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const {    
+        inv_id,   
+        classification_id,
+        inv_make,
+        inv_model,
+        inv_year,
+        inv_description,
+        inv_image,
+        inv_thumbnail,
+        price,
+        inv_color,
+        miles, } = req.body;
+  
+        const nav = await utilities.getNav()
+        const grid = await utilities.buildAddInventory()
+      
+        
+        
+        const itemName = `${itemData.inv_make} ${itemData.inv_model}`    
+      res.render('./inventory/edit-inventory', {
+        errors: errors.array(),
+        title: "Edit " + itemName,
+        inv_id,
+        classification_id,
+        inv_make,
+        inv_model,
+        inv_year,
+        inv_description,
+        inv_image,
+        inv_thumbnail,
+        price,
+        inv_color,
+        miles,
+        nav,
+        grid,
+      });
+    } else {
+      next();
+    }
+  };
+  
 
 
 /*  **********************************

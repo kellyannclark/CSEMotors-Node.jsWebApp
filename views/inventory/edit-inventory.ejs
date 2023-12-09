@@ -1,0 +1,82 @@
+<% if (title) { %>
+  <h1><%= title %></h1>
+ 
+<% } else { %>
+  <% res.redirect('/'); %>
+<% } %>
+<% if (errors && errors.length > 0) { %>
+  <ul class="notice">
+    <% errors.forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<label>All Fields Are Required</label>
+<form action="/inv/update" method="post">
+<br>
+<fieldset class="vehicle-fieldset">
+<label>Classification</label>
+<%- classificationSelect %>
+<br>
+     <br>
+<label>Make</label>
+<br>
+<input class="input" type="text" value="<%=inv_make%>" name="inv_make" minlength="3" required placeholder="min of 3 characters">
+<br>
+<label>Model</label>
+<br>
+<input class="input" type="text" value="<%=inv_model%>" name="inv_model" minlength="3" required placeholder="min of 3 characters">
+<br>
+<label>Description</label>
+<br>
+<textarea name="inv_description"  rows="5" cols="40" required><%=inv_description%></textarea>
+<br>
+<label>Image</label>
+<br>
+<input name="inv_image" required value="<%= inv_image ? inv_image : '' %>" />
+<br>
+
+<label>Thumbnail</label>
+<br>
+<input name="inv_thumbnail" required value="<%= inv_thumbnail ? inv_thumbnail : '' %>" />
+<br>
+<label>Price</label>
+<br>
+<input class="input" type="number" value="<%=inv_price%>" name="inv_price" required placeholder="decimal or integar">
+<br>
+<label>Year</label>
+<br>
+<input class="input" type="number" value="<%=inv_year%>" name="inv_year" required placeholder="4-digit year">
+<br>
+<label>Miles</label>
+<br>
+<input class="input" type="number" value="<%=inv_miles%>" name="inv_miles" required placeholder="digits only">
+<br>
+<label>Color</label>
+<br>
+<input type="text" name="inv_color" value="<%=inv_color%>" required>
+<br>
+</fieldset>
+<input type="submit" name="submit" value="Update Vehicle">
+<input type="hidden" name="inv_id"
+<% if(locals.inv_id) { %> value="<%= locals.inv_id %>"
+<% } %>>
+
+</form>
+
+
+
+
+
+
+
+
+
+  
+  
+ 
+  
+
+
+

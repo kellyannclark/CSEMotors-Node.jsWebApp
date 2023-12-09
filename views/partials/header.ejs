@@ -2,8 +2,17 @@
     <span class="siteName">
       <a href="/" title="Return to home page">CSE Motors</a>
     </span>
+
+
     <div id="tools">
+      <% if (locals.loggedin) { %>  
+        <a title="Click for management view" style="font-size: 16px;" href="/account/">Welcome <%= locals.accountData.account_firstname %></a>
+        <a title="Click to logout" style="font-size: 16px;" href="/account/logout">Logout</a>
+        <% } else { %> 
       <a title="Click to log in" href="/account/login">MY ACCOUNT</a>
+      <% } %>
     </div>
   </header>
   
+
+

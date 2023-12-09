@@ -36,12 +36,13 @@ async function getInventoryById(inv_id) {
        WHERE i.inv_id = $1`,
       [inv_id]
     );
-    return data.rows;
+    return data.rows[0] || {}; // Return an empty object if no data is found
   } catch (error) {
     console.error("getInventoryById error: " + error);
+    throw error;
   }
-
 }
+
 
 /* ***************************
  * Add new classification to the database
@@ -76,10 +77,68 @@ async function insertInventory(classification_id, inv_make, inv_model, inv_year,
   }
 }
 
+/* ***************************
+ * Update inventory in the database
+ * ************************** */
+
+async function updateInventory(
+  inv_id,
+  inv_make,
+  inv_model,
+  inv_description,
+  inv_image,
+  inv_thumbnail,
+  inv_price,
+  inv_year,
+  inv_miles,
+  inv_color,
+  classification_id
+) {
+  try {
+    const sql =
+      "UPDATE public.inventory SET inv_make = $1, inv_model = $2, inv_description = $3, inv_image = $4, inv_thumbnail = $5, inv_price = $6, inv_year = $7, inv_miles = $8, inv_color = $9, classification_id = $10 WHERE inv_id = $11 RETURNING *";
+    const data = await pool.query(sql, [
+      inv_make,
+      inv_model,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color,
+      classification_id,
+      inv_id,
+    ]);
+
+    return data.rows[0];
+  } catch (error) {
+    console.error("model error: " + error);
+    throw error; 
+  }
+}
+
+/* ***************************
+ * Delete inventory in the database
+ * ************************** */
+
+async function deleteInventory(parsedInvId) {
+  try {
+    const sql = 'DELETE FROM inventory WHERE inv_id = $1';
+    const data = await pool.query(sql, [
+      parsedInvId, // Use parsedInvId instead of inv_id
+    ]);
+
+    return data.rows[0];
+  } catch (error) {
+    console.error("model error: " + error);
+    throw error; 
+  }
+}
 
 
 
 
 
 
-module.exports = {getClassifications, getInventoryByClassificationId, getInventoryById, insertNewClassification, insertInventory };
+module.exports = {getClassifications, getInventoryByClassificationId, getInventoryById, insertNewClassification, insertInventory, updateInventory, deleteInventory };

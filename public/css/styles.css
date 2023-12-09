@@ -84,12 +84,15 @@
   text-align: center; /* Center-align text */
   position: fixed; /* Fixed position for top notification bar */
   top: 0; /* Display at the top of the page */
-  width: 100%; /* Full width */
+  width: 20%; /* Full width */
   z-index: 1000; /* Ensure it appears on top of other elements */
   transition: 0.3s; /* Smooth transition for visibility */
 }
 
-
+.left-links {
+  float: left;
+  margin-right: 420px; /* Add margin if needed */
+}
 
 /* body styles */
 
